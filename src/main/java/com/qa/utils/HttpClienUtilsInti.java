@@ -8,11 +8,15 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+
+import com.qa.model.HttpClientRequest;
+import com.qa.model.HttpClientResponse;
 
 public class HttpClienUtilsInti {
 	
@@ -82,6 +86,35 @@ public class HttpClienUtilsInti {
 		}
 	
 	}
+	
+	// 再次封装一个
+	public HttpClientResponse doPost(HttpClientRequest request) {
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+		String url = request.getUrl();
+		HttpPost post = new HttpPost(url);
+		// 设置头部json
+		post.setHeader("Content-Type", "application/json");
+		// 参数
+		String strjson = "{'username':'admin','password':'1234'}";
+		StringEntity entity = new StringEntity(strjson,"utf-8");	
+		post.setEntity(entity);
+		
+		try {
+			CloseableHttpResponse response = httpClient.execute(post);
+			response.getStatusLine().toString().split(" ");
+			HttpEntity responseEntity = response.getEntity();
+			
+			
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
 	public static void main(String[] args) {
 		new HttpClienUtilsInti().dePost();

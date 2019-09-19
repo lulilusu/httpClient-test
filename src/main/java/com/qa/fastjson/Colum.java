@@ -1,4 +1,4 @@
-package com.qa.test;
+package com.qa.fastjson;
 
 public class Colum {
 	

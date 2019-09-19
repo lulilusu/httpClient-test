@@ -1,4 +1,4 @@
-package com.qa.test;
+package com.qa.fastjson;
 
 import java.util.ArrayList;
 import java.util.List;
