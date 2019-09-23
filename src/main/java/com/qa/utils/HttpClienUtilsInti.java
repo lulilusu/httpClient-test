@@ -1,6 +1,13 @@
 package com.qa.utils;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -9,10 +16,12 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 
 import com.qa.model.HttpClientRequest;
@@ -22,8 +31,11 @@ public class HttpClienUtilsInti {
 	
 	public void doGet() {
 		
-		CloseableHttpClient httpClient = HttpClients.createDefault();
-		HttpGet get = new HttpGet("http://work.360humi.com");
+//		CloseableHttpClient httpClient = HttpClients.createDefault();
+		CloseableHttpClient httpClient = HttpClienUtilsInti.createSSLClientDefault();
+		
+		HttpGet get = new HttpGet("https://test.360humi.com/api/homeCmsServer/getHomeCmsEmp?type=service1&_time=1568969197000&_sign=CJkDBkBCBgbbb");
+		
 		
 		CloseableHttpResponse response = null;
 		try {
@@ -116,8 +128,30 @@ public class HttpClienUtilsInti {
 	}
 	
 	
+	public static CloseableHttpClient createSSLClientDefault() {
+		try {
+			SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+				
+				public boolean isTrusted(X509Certificate[] chain,String authType) throws CertificateException{
+					return true;
+				}
+			}).build();
+			
+			
+		} catch (KeyManagementException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			e.printStackTrace();
+		}
+		
+		return HttpClients.createDefault();
+	}
+	
+	
 	public static void main(String[] args) {
-		new HttpClienUtilsInti().dePost();
+		new HttpClienUtilsInti().doGet();
 	}
 		
 }

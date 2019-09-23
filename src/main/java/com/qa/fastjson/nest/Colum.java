@@ -1,4 +1,4 @@
-package com.qa.fastjson;
+package com.qa.fastjson.nest;
 
 public class Colum {
 	
