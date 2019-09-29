@@ -28,77 +28,78 @@ import com.qa.model.HttpClientRequest;
 import com.qa.model.HttpClientResponse;
 
 public class HttpClienUtilsInti {
-	
+
 	public void doGet() {
-		
-//		CloseableHttpClient httpClient = HttpClients.createDefault();
-		CloseableHttpClient httpClient = HttpClienUtilsInti.createSSLClientDefault();
-		
-		HttpGet get = new HttpGet("https://test.360humi.com/api/homeCmsServer/getHomeCmsEmp?type=service1&_time=1568969197000&_sign=CJkDBkBCBgbbb");
-		
-		
+
+//		CloseableHttpClient httpClient = HttpClients.createDefault();  // http
+		CloseableHttpClient httpClient = HttpClienUtilsInti.createSSLClientDefault();  // https
+
+		//https://test.360humi.com/api/homeCmsServer/getHomeCmsEmp?type=service1&_time=1568969197000&_sign=CJkDBkBCBgbbb
+		HttpGet get = new HttpGet(
+				"http://work.360humi.com");
+
 		CloseableHttpResponse response = null;
 		try {
 			response = httpClient.execute(get);
-		
-				HttpEntity entity = response.getEntity();
-				String body = EntityUtils.toString(entity,"utf-8");
-				System.out.println(body);
-			
-			
-	
+
+			HttpEntity entity = response.getEntity();
+			String body = EntityUtils.toString(entity, "utf-8");
+			System.out.println(body);
+
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				response.close();
 				httpClient.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-	
+
 	}
-	
+
 	public void dePost() {
-		
+
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		HttpPost post = new HttpPost("http://gateway.360humi.com/security/authentication/form");
 		post.setHeader("Content-Type", "application/json;charset=utf8");
 		String strjson = "{'username':'admin','password':'1234'}";
-		StringEntity entity = new StringEntity(strjson,"utf-8");	
+		StringEntity entity = new StringEntity(strjson, "utf-8");
 		post.setEntity(entity);
-		
+
 		CloseableHttpResponse response = null;
 		try {
 			response = httpClient.execute(post);
 			HttpEntity responseEntity = response.getEntity();
-			if(responseEntity != null) {
-				System.out.println(EntityUtils.toString(responseEntity,"utf-8")); 
+			if (responseEntity != null) {
+				System.out.println(EntityUtils.toString(responseEntity, "utf-8"));
 				System.out.println(response.getStatusLine().getStatusCode());
 			}
-				
+
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
-				if(httpClient != null) httpClient.close();
-				if(response != null) response.close(); 
+				if (httpClient != null)
+					httpClient.close();
+				if (response != null)
+					response.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-	
+
 	}
-	
+
 	// 再次封装一个
 	public HttpClientResponse doPost(HttpClientRequest request) {
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -108,36 +109,34 @@ public class HttpClienUtilsInti {
 		post.setHeader("Content-Type", "application/json");
 		// 参数
 		String strjson = "{'username':'admin','password':'1234'}";
-		StringEntity entity = new StringEntity(strjson,"utf-8");	
+		StringEntity entity = new StringEntity(strjson, "utf-8");
 		post.setEntity(entity);
-		
+
 		try {
 			CloseableHttpResponse response = httpClient.execute(post);
 			response.getStatusLine().toString().split(" ");
 			HttpEntity responseEntity = response.getEntity();
-			
-			
+
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e){
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	
+
+	/**
+	 *      绕过SSL认证，可访问HTTPS
+	 * @return
+	 */
 	public static CloseableHttpClient createSSLClientDefault() {
 		try {
 			SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-				
-				public boolean isTrusted(X509Certificate[] chain,String authType) throws CertificateException{
+
+				public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 					return true;
 				}
 			}).build();
-			
-			
 		} catch (KeyManagementException e) {
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
@@ -145,17 +144,11 @@ public class HttpClienUtilsInti {
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 		}
-		
 		return HttpClients.createDefault();
 	}
-	
-	
+
 	public static void main(String[] args) {
 		new HttpClienUtilsInti().doGet();
 	}
-		
+
 }
-	
-	
-	
-	
